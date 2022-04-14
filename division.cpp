@@ -94,30 +94,25 @@ std::bitset<n> division(std::bitset<n> Q, std::bitset<n> M, std::bitset<n>& rema
     std::bitset<n> A = 0;      //palabra auxiliar de n bits, empieza en 0
     unsigned int count = n;
 
-    Repeat:
-    shiftLeft<n>(A, Q);
-    if (A.to_ulong() >= M.to_ulong())
-        Q.set(0, true);      //nuevo bit (derecha) = 1
-    A = diff<n>(A, M);       //solo resta si A es mayor a M
-    count -= 1;
-    if (count == 0)
+    for (int i = n; i > 0; i--)
     {
-        remainderDiv = A;
-        return Q;
+        shiftLeft<n>(A, Q);
+        if (A.to_ulong() >= M.to_ulong())
+            Q.set(0, true);      //nuevo bit (derecha) = 1
+        A = diff<n>(A, M);       //solo resta si A es mayor a M
+        count -= 1;
     }
-    else
-    {
-        goto Repeat;
-    }
+    remainderDiv = A;
+    return Q;
 }
 
 int main()
 {
     //division<n bits>(dividendo, divisor)
-    std::bitset<9> remainderDiv;
-    auto div = division<9>(265, 34, remainderDiv);
+    std::bitset<11> remainderDiv;
+    auto div = division<11>(1075, 125, remainderDiv);
     std::cout << div << ": " << div.to_ulong() << '\n';
-    std::cout << remainderDiv << ": " << remainderDiv.to_ulong() << '\n';
+    std::cout << remainderDiv << ": " << remainderDiv.to_ulong() << '\n' << '\n';
 
     return 0;
 }
