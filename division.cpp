@@ -1,5 +1,26 @@
+//Alumna: Mariana Paula Caceres Urquizo 
+
 #include <iostream>
 #include <bitset>
+
+template <long long unsigned int n>
+int bitsToPositiveInt(std::bitset<n> bits)
+{
+    int sum = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (bits[i])
+        {
+            int pow2 = 1;
+            for (int j = 0; j < i; j++)
+            {
+                pow2 *= 2;
+            }
+            sum += pow2;
+        }
+    }
+    return sum;
+}
 
 template <unsigned int n>
 std::bitset<n> sum(std::bitset<n> lhs, std::bitset<n> rhs)
@@ -13,7 +34,7 @@ std::bitset<n> sum(std::bitset<n> lhs, std::bitset<n> rhs)
         //XOR para determinar si es 0 o 1
         bits.set(i, lhs[i] ^ rhs[i]);
         //El bit se invierte si es 1 el carry
-        if (carry[i] == true)
+        if (carry[i])
         {
             bits.flip(i);
             //Solo se guarda un carry si esta dentro de los limites
@@ -55,7 +76,7 @@ std::bitset<n> diff(std::bitset<n> lhs, std::bitset<n> rhs)
 
     //Sumar y retornar la resta si lhs > rhs 
     auto bits = sum<n + 1>(newLhs, newRhs);
-    if (bits[n] == true)
+    if (bits[n])
     {
         return lhs;
     }
@@ -97,7 +118,7 @@ std::bitset<n> division(std::bitset<n> Q, std::bitset<n> M, std::bitset<n>& rema
     for (int i = n; i > 0; i--)
     {
         shiftLeft<n>(A, Q);
-        if (A.to_ulong() >= M.to_ulong())
+        if (bitsToPositiveInt(A) >= bitsToPositiveInt(M))
             Q.set(0, true);      //nuevo bit (derecha) = 1
         A = diff<n>(A, M);       //solo resta si A es mayor a M
         count -= 1;
@@ -109,10 +130,38 @@ std::bitset<n> division(std::bitset<n> Q, std::bitset<n> M, std::bitset<n>& rema
 int main()
 {
     //division<n bits>(dividendo, divisor)
-    std::bitset<11> remainderDiv;
-    auto div = division<11>(1075, 125, remainderDiv);
-    std::cout << div << ": " << div.to_ulong() << '\n';
-    std::cout << remainderDiv << ": " << remainderDiv.to_ulong() << '\n' << '\n';
+    //3 ejemplos con tres bitsizes distintos
+
+    unsigned int Q;
+    unsigned int M;
+    std::cout << "Ejemplo 1: 4 bits (numeros del 0 al 15)\n";
+    std::cout << "Ingrese el dividendo y el divisor: ";
+    std::cin >> Q >> M;
+
+    std::bitset<4> remainderDiv1;
+    auto div1 = division<4>(Q, M, remainderDiv1);
+    std::cout << "Cociente: " << div1 << ": " << bitsToPositiveInt(div1) << '\n';
+    std::cout << "Residuo: " << remainderDiv1 << ": " << bitsToPositiveInt(remainderDiv1) << "\n\n";
+
+    
+    std::cout << "Ejemplo 2: 8 bits (numeros del 0 al 255)\n";
+    std::cout << "Ingrese el dividendo y el divisor: ";
+    std::cin >> Q >> M;
+
+    std::bitset<8> remainderDiv2;
+    auto div2 = division<8>(Q, M, remainderDiv2);
+    std::cout << "Cociente: " << div2 << ": " << bitsToPositiveInt(div2) << '\n';
+    std::cout << "Residuo: " << remainderDiv2 << ": " << bitsToPositiveInt(remainderDiv2) << "\n\n";
+
+    
+    std::cout << "Ejemplo 3: 16 bits (numeros del 0 al 65535)\n";
+    std::cout << "Ingrese el dividendo y el divisor: ";
+    std::cin >> Q >> M;
+
+    std::bitset<16> remainderDiv3;
+    auto div3 = division<16>(Q, M, remainderDiv3);
+    std::cout << "Cociente: " << div3 << ": " << bitsToPositiveInt(div3) << '\n';
+    std::cout << "Residuo: " << remainderDiv3 << ": " << bitsToPositiveInt(remainderDiv3) << "\n\n";
 
     return 0;
 }
