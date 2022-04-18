@@ -113,7 +113,6 @@ template <unsigned int n>
 std::bitset<n> division(std::bitset<n> Q, std::bitset<n> M, std::bitset<n>& remainderDiv)
 {
     std::bitset<n> A = 0;      //palabra auxiliar de n bits, empieza en 0
-    unsigned int count = n;
 
     for (int i = n; i > 0; i--)
     {
@@ -121,7 +120,6 @@ std::bitset<n> division(std::bitset<n> Q, std::bitset<n> M, std::bitset<n>& rema
         if (bitsToPositiveInt(A) >= bitsToPositiveInt(M))
             Q.set(0, true);      //nuevo bit (derecha) = 1
         A = diff<n>(A, M);       //solo resta si A es mayor a M
-        count -= 1;
     }
     remainderDiv = A;
     return Q;
